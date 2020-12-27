@@ -6,6 +6,10 @@ const mongoose = require('./services/mongoose')
 
 const app = express();
 
+const router = require('./router');
+
+app.use(router);
+
 app.use(bodyParser.json());
 
 app.use(morgan('dev'));
