@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const chalk = require("chalk");
-
+const mongoose = require('./services/mongoose')
 
 const app = express();
 
