@@ -7,11 +7,11 @@ const InitiateMongoServer = async () => {
   try {
     await mongoose.connect(MONGOURI, {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useCreateIndex: true
     });
       console.log(chalk.bgGreen("Connected to database"));
 } catch (e) {
-    console.log(e);
     throw e;
   }
 };

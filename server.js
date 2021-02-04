@@ -11,7 +11,7 @@ InitiateMongoServer();
 const app = express();
 
 var corsOptions = {
-    origin: "http://127.0.0.1:4200"
+    origin: "*"
   };
 app.use(cors(corsOptions));
 

@@ -1,4 +1,5 @@
 const config = require("../config/auth.config");
+const nodemailer = require("../config/nodemailer.config");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
@@ -6,6 +7,7 @@ const Role = db.role;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
+const e = require("express");
 
 exports.signup = async (req, res) => {
   const errors = validationResult(req);
@@ -14,10 +16,27 @@ exports.signup = async (req, res) => {
       errors: errors.array(),
     });
   }
-  const {
-    password
-} = req.body;
+  const { password, email } = req.body;
+
   try {
+    const payload = {
+      user: {
+        email: email,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      "randomString",
+      {
+        expiresIn: 10000,
+      },
+      (err, token) => {
+        if (err) throw err;
+        user.confirmationCode = token;
+      }
+    );
+
     const user = new User({
       username: req.body.username,
       email: req.body.email,
@@ -34,40 +53,44 @@ exports.signup = async (req, res) => {
           },
           (err, roles) => {
             if (err) {
-              res.status(500).send({ message: err });
-              return;
+              return res.status(500).send({ message: err });
             }
 
-            // user.roles = roles.map((role) => role._id);
+            user.roles = roles.map((role) => role._id);
             user.save((err) => {
               if (err) {
-                res.status(500).send({ message: err });
-                return;
+                return res.status(500).send({ message: err });
+    
               }
 
-              res.send({ message: "User registered successfully!" });
+              return res.send({ message: "User registered successfull! Now verify your Email by clicking on the link send to your email." });
             });
           }
         );
       } else {
         Role.findOne({ name: "user" }, (err, role) => {
           if (err) {
-            res.status(500).send({ message: err });
-            return;
+           return res.status(500).send({ message: err });
+            
           }
 
           user.roles = [role._id];
           user.save((err) => {
             if (err) {
-              res.status(500).send({ message: err });
-              return;
+              return res.status(500).send({ message: err });
+              
             }
 
-            res.send({ message: "User registered successfully!" });
+            return res.send({ message: "User registered successfull! Now verify your Email by clicking on the link send to your email." });
           });
         });
       }
     });
+    nodemailer.sendConfirmationEmail(
+      user.username,
+      user.email,
+      user.confirmationCode,
+    );
   } catch (err) {
     console.log(err.message);
     res.status(500).send("Error in Saving");
@@ -75,6 +98,13 @@ exports.signup = async (req, res) => {
 };
 
 exports.signin = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      errors: errors.array(),
+    });
+  }
+
   User.findOne({
     username: req.body.username,
   })
@@ -87,6 +117,11 @@ exports.signin = (req, res) => {
 
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
+      }
+      if (user.status != "Active") {
+        return res.status(401).send({
+          message: "Pending Account. Please Verify Your Email!",
+        });
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -118,4 +153,28 @@ exports.signin = (req, res) => {
         accessToken: token,
       });
     });
+};
+
+exports.verifyUser = async (req, res) => {
+  User.findOne({
+    confirmationCode: req.params.confirmationCode,
+  })
+    .then((user) => {
+      console.log(user)
+      if (!user) {
+        return res.status(404).send({ danger: "User Not found. Invalid Confirmation Code." });
+      }
+      if (user.status == "Active"){
+        return res.status(200).send({warning : "Email is already Verified!."})
+      }
+
+      user.status = "Active";
+      user.save((err) => {
+        if (err) {
+          throw e;
+        }
+        return res.status(200).send({ success : "Email verified successfully!s"})
+      });
+    })
+    .catch((e) => res.status(500).send({ message: e }));
 };

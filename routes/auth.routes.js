@@ -5,12 +5,15 @@ const { check, body} = require("express-validator");
 const express = require('express')
 const app = express()
 module.exports = [
-
+ 
   app.use(function(req, res, next) {
-    res.header(
-      "Access-Control-Allow-Headers",
-      "x-access-token, Origin, Content-Type, Accept"
-    );
+     //Enabling CORS
+     res.header("Access-Control-Allow-Origin", "*");
+     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+     res.header(
+       "Access-Control-Allow-Headers",
+       "Origin, X-Requested-With, contentType,Content-Type, Accept, Authorization"
+     );
     next();
   }),
 
@@ -30,10 +33,11 @@ module.exports = [
       check("password", "Please enter a password with only numbers and text and at least 6 characters.").isLength({
           min: 6
       }).isAlphanumeric(),
-      body('confirmPassword').custom((value, {req}) =>{
-        if (value!== req.body.password){
+      check('confirmPassword').custom((value, {req}) =>{
+        if (value !== req.body.password){
           throw new Error('Password have to match')
         }
+        return true
       })
   ],
     [
@@ -43,5 +47,15 @@ module.exports = [
     controller.signup
   ),
 
-  app.post("/signin", controller.signin)
+  app.post("/signin", [
+    check("username", "Please Enter a Valid Username")
+    .not()
+    .isEmpty(),
+    check("password", "Please enter a password with only numbers and text and at least 6 characters.").isLength({
+      min: 6
+  }).isAlphanumeric(),
+  ],controller.signin),
+
+  app.get("/verifyuser/:confirmationCode", controller.verifyUser),
+
   ]
