@@ -60,36 +60,43 @@ exports.signup = async (req, res) => {
             user.save((err) => {
               if (err) {
                 return res.status(500).send({ message: err });
-    
               }
 
-              return res.send({ message: "User registered successfull! Now verify your Email by clicking on the link send to your email." });
+              return res.send({
+                message:
+                  "User registered successfull! Now verify your Email by clicking on the link send to your email.",
+              });
             });
           }
         );
       } else {
         Role.findOne({ name: "user" }, (err, role) => {
           if (err) {
-           return res.status(500).send({ message: err });
-            
+            return res.status(500).send({ message: err });
           }
 
           user.roles = [role._id];
           user.save((err) => {
             if (err) {
               return res.status(500).send({ message: err });
-              
             }
 
-            return res.send({ message: "User registered successfull! Now verify your Email by clicking on the link send to your email." });
+            return res.send({
+              message:
+                "User registered successfull! Now verify your Email by clicking on the link send to your email.",
+            });
           });
         });
       }
     });
     nodemailer.sendConfirmationEmail(
-      user.username,
       user.email,
-      user.confirmationCode,
+      (user.subject = "Please confirm your account"),
+      (body = `<h1>Email Confirmation</h1>
+      <h2>Hello ${user.username}</h2>
+      <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
+      <a href=http://localhost:4200/auth/verifyuser?confirmationCode=${user.confirmationCode}> Click here</a>
+      </div>`)
     );
   } catch (err) {
     console.log(err.message);
@@ -160,12 +167,13 @@ exports.verifyUser = async (req, res) => {
     confirmationCode: req.params.confirmationCode,
   })
     .then((user) => {
-      console.log(user)
       if (!user) {
-        return res.status(404).send({ danger: "User Not found. Invalid Confirmation Code." });
+        return res
+          .status(404)
+          .send({ danger: "User Not found. Invalid Confirmation Code." });
       }
-      if (user.status == "Active"){
-        return res.status(200).send({warning : "Email is already Verified!."})
+      if (user.status == "Active") {
+        return res.status(200).send({ warning: "Email is already Verified!." });
       }
 
       user.status = "Active";
@@ -173,8 +181,85 @@ exports.verifyUser = async (req, res) => {
         if (err) {
           throw e;
         }
-        return res.status(200).send({ success : "Email verified successfully!s"})
+        return res
+          .status(200)
+          .send({ success: "Email verified successfully!s" });
       });
     })
     .catch((e) => res.status(500).send({ message: e }));
+};
+
+exports.recover = async (req, res) => {
+  User.findOne({ email: req.body.email }).exec((err, user) => {
+    try {
+      if (!user)
+        return res.status(401).json({
+          message:
+            "The email address " +
+            req.body.email +
+            " is not associated with any account. Double-check your email address and try again.",
+        });
+
+      user.generatePasswordReset();
+
+      user.save((err, user) => {
+        let link = `http://127.0.0.1:4200/auth/resetPassword?token=${user.resetPasswordToken}`;
+        console.log(link)
+        nodemailer.sendConfirmationEmail(
+          req.body.email,
+          (user.subject = "Password change request"),
+          (body = `<h2>Hello ${user.username}</h2>
+        <p>Thank you for subscribing. Please <a href=${link}> Click here</a> to reset your password.</p>
+        <p>  If you did not request this, please ignore this email and your password will remain unchanged.\n</p>
+        </div>`)
+        );
+      });
+      return res
+        .status(200)
+        .json({
+          message: "Check your mail, we have set you reset password link",
+        });
+    } catch (err) {
+      return res.status(500).json({ message: err.message });
+    }
+  });
+};
+
+exports.resetPassword = (req, res) => {
+  try {
+    User.findOne({
+      resetPasswordToken: req.body.token,
+      resetPasswordExpires: { $gt: Date.now() },
+    }).exec((err, user) => {
+      if (!user)
+        return res
+          .status(401)
+          .json({ message: "Password reset token is invalid or has expired." });
+
+      //Set the new password
+      const salt =  bcrypt.genSalt(10);
+      user.password =  bcrypt.hash(req.body.password, salt);
+
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+
+      user.save((err, user) => {
+        if (err) return res.status(500).json({ message: err.message });
+
+        nodemailer.sendConfirmationEmail(
+          user.email,
+          (user.subject = "Your password has been changed"),
+          (body = `<h2>Hello ${user.username}</h2>
+            <p> This is a confirmation that the password for your account ${user.email} has just been changed.</p>
+            </div>`)
+        );
+
+        return res
+          .status(200)
+          .json({ message: "Your password has been updated." });
+      });
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };

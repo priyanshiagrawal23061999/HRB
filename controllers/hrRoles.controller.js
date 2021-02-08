@@ -8,7 +8,6 @@ exports.getHrRoles = (req, res) =>{
             res.status(500).send(err)
         }
         if (docs){
-            console.log(docs)
             res.send(docs)
         }
     })
@@ -17,7 +16,6 @@ exports.getHrRoles = (req, res) =>{
 exports.insertHrRoles = (req, res) =>{
     console.log(req.body)
     HrRoles.insertMany(req.body).then(function(){ 
-        console.log("Data inserted") 
         res.send('inserted') // Success 
     }).catch(function(error){ 
         console.log(error)      // Failure 
