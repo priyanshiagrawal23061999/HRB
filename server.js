@@ -1,19 +1,37 @@
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const chalk = require("chalk");
-const mongoConnect = require('./services/mongodb')
+const cors = require("cors");
+const InitiateMongoServer = require("./config/db.config");
+  const db = require("./models");
 
+const chalk = require("chalk");
+
+InitiateMongoServer();
 const app = express();
+
+var corsOptions = {
+    origin: "*"
+  };
+app.use(cors(corsOptions));
+
 
 const router = require('./router');
 
+// parse requests of content-type - application/json
 app.use(bodyParser.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.text());
+
+// app.use(bodyParser.text());
 app.use(morgan('dev'));
 
-app.use(router);
+app.use('/api', router);
+
+app.get("/", (req, res) => {
+    res.json({ message: "Welcome to HR application." });
+  });
 
 var server = app.listen(9000, function(){
     var port = server.address().port;
