@@ -6,10 +6,12 @@ const app = express()
 const userRoute = require('./routes/user.routes')
 const authRoute = require('./routes/auth.routes')
 const hrRolesRoute = require('./routes/HrRoles.routes')
+const menuMasterRoute = require('./routes/menuMaster.routes')
+
 
 router.use('/test', userRoute);
 router.use('/auth', authRoute);
 router.use('/hrroles', hrRolesRoute)
-
+router.use('/menuMaster', menuMasterRoute)
 
 module.exports = router
