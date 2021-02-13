@@ -12,6 +12,7 @@ const InitiateMongoServer = async () => {
     });
       console.log(chalk.bgGreen("Connected to database"));
 } catch (e) {
+  console.log(e)
     throw e;
   }
 };
