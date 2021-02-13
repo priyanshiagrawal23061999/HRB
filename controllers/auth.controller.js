@@ -99,7 +99,6 @@ exports.signup = async (req, res) => {
       </div>`)
     );
   } catch (err) {
-    console.log(err.message);
     res.status(500).send("Error in Saving");
   }
 };
@@ -192,6 +191,11 @@ exports.verifyUser = async (req, res) => {
 exports.recover = async (req, res) => {
   User.findOne({ email: req.body.email }).exec((err, user) => {
     try {
+      if (user.status === "Pending"){
+        return res.status(401).json({
+          message : "Please verify your email first!"
+        })
+      }
       if (!user)
         return res.status(401).json({
           message:
@@ -204,7 +208,6 @@ exports.recover = async (req, res) => {
 
       user.save((err, user) => {
         let link = `http://127.0.0.1:4200/auth/resetPassword?token=${user.resetPasswordToken}`;
-        console.log(link)
         nodemailer.sendConfirmationEmail(
           req.body.email,
           (user.subject = "Password change request"),
@@ -227,6 +230,8 @@ exports.recover = async (req, res) => {
 
 exports.resetPassword = (req, res) => {
   try {
+
+    const { password, confirmPassword } = req.body
     User.findOne({
       resetPasswordToken: req.body.token,
       resetPasswordExpires: { $gt: Date.now() },
@@ -237,26 +242,30 @@ exports.resetPassword = (req, res) => {
           .json({ message: "Password reset token is invalid or has expired." });
 
       //Set the new password
-      const salt =  bcrypt.genSalt(10);
-      user.password =  bcrypt.hash(req.body.password, salt);
-
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpires = undefined;
-
-      user.save((err, user) => {
-        if (err) return res.status(500).json({ message: err.message });
-
-        nodemailer.sendConfirmationEmail(
-          user.email,
-          (user.subject = "Your password has been changed"),
-          (body = `<h2>Hello ${user.username}</h2>
-            <p> This is a confirmation that the password for your account ${user.email} has just been changed.</p>
-            </div>`)
-        );
-
-        return res
-          .status(200)
-          .json({ message: "Your password has been updated." });
+      bcrypt.genSalt(10,(err, salt) =>{
+        if(err) throw err;
+        bcrypt.hash(password, salt,function(err, hash){
+          if (err) throw err;
+          user.password = hash;
+          user.resetPasswordToken = undefined;
+          user.resetPasswordExpires = undefined;
+    
+          user.save((err, user) => {
+            if (err) return res.status(500).json({ message: err.message });
+    
+            nodemailer.sendConfirmationEmail(
+              user.email,
+              (user.subject = "Your password has been changed"),
+              (body = `<h2>Hello ${user.username}</h2>
+                <p> This is a confirmation that the password for your account ${user.email} has just been changed.</p>
+                </div>`)
+            );
+    
+            return res
+              .status(200)
+              .json({ message: "Your password has been updated." });
+          });
+        });
       });
     });
   } catch (err) {
