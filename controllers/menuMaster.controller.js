@@ -13,36 +13,14 @@ exports.getEmployees = (req, res) =>{
 exports.insertEmployee = (req, res) =>{
     console.log(req.body)
      console.log(Employees)
-    Employees.insertOne(req.body).then(function(){ 
+    Employees.create(req.body).then(function(){ 
         res.send('inserted') // Success 
     }).catch(function(error){ 
         console.log(error)      // Failure 
     }); 
 }
 
-exports.getDepartments = (req, res) =>{
-    console.log("show employees for smart table")
-    WorkTypes.find({},['title'],(err, docs) =>{
-        if (err){
-            res.status(500).send(err)
-        }
-        if (docs){
-            res.send(docs)
-        }
-    })
-}
 
-exports.getWorkTypes = (req, res) =>{
-    console.log("show employees for smart table")
-    Departments.find({},['title'],(err, docs) =>{
-        if (err){
-            res.status(500).send(err)
-        }
-        if (docs){
-            res.send(docs)
-        }
-    })
-}
 
 
 
