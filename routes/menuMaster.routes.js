@@ -11,12 +11,5 @@ module.exports =[
         '/insert',
         controller.insertEmployee
     ),
-    router.get(
-        '/department', 
-        controller.getDepartments
-    ),
-    router.get(
-        '/workTypes',
-        controller.getWorkTypes
-    )
+   
 ]

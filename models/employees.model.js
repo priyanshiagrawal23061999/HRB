@@ -9,7 +9,7 @@ const Employees = mongoose.model(
     Company: String,
     Department: String,
     Designation: String,
-    Email: Number,
+    Email: String,
     JoiningDate: Date,
     ReportingTo: String,
     DOB: Date,
