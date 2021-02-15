@@ -11,13 +11,19 @@ exports.getEmployees = (req, res) =>{
 }
 
 exports.insertEmployee = (req, res) =>{
-    console.log(req.body)
-     console.log(Employees)
-    Employees.create(req.body).then(function(){ 
-        res.send('inserted') // Success 
-    }).catch(function(error){ 
-        console.log(error)      // Failure 
-    }); 
+    emplId = ""
+    Employees.countDocuments({Company:{$gte: req.body.Company}}, function (err, count) {
+        emplId = `0601${req.body.Company}${count+1}`
+        req.body.EmployeeId = emplId
+        
+        Employees.create(req.body).then(function(){ 
+            res.send('inserted') // Success 
+        }).catch(function(error){ 
+            console.log(error)      // Failure 
+        }); 
+      });
+     
+    
 }
 
 
