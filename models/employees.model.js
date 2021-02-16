@@ -10,9 +10,16 @@ const Employees = mongoose.model(
     Department: String,
     Designation: String,
     Email: String,
-    JoiningDate: Date,
+    JoiningDate: { type: Date, default: Date.now },
     ReportingTo: String,
-    DOB: Date,
+    DOB:  {
+      type: Date,
+      // The dates of the first and last episodes of
+      // Star Trek: The Next Generation
+      // min: '1987-09-28',
+      max: '2005-05-23'
+      
+    },
     WorkType: String,
 
     // Work Information
