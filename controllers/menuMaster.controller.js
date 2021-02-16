@@ -16,11 +16,15 @@ exports.insertEmployee = (req, res) =>{
         emplId = `0601${req.body.Company}${count+1}`
         req.body.EmployeeId = emplId
         
-        Employees.create(req.body).then(function(){ 
+        Employees.create(req.body, function(err, data){ 
+            if(err){
+                console.log('error')
+                res.status(500).send(err)
+            }
+            else{
             res.send('inserted') // Success 
-        }).catch(function(error){ 
-            console.log(error)      // Failure 
-        }); 
+            }
+        })
       });
      
     
