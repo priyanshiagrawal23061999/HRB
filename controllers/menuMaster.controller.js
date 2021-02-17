@@ -2,12 +2,19 @@ const db = require("../models");
 
 
 const Employees = db.employees;
-const Departments = db.departments;
-const WorkTypes = db.WorkTypes;
 
 
 exports.getEmployees = (req, res) =>{
     console.log("show employees for smart table")
+    Employees.find({}, function(err, users) {
+        var userMap = {};
+    
+        users.forEach(function(user) {
+          userMap[user._id] = user;
+        });
+        
+        res.send(userMap);  
+      });
 }
 
 exports.insertEmployee = (req, res) =>{
