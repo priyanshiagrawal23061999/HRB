@@ -11,5 +11,10 @@ module.exports =[
         '/insert',
         controller.insertEmployee
     ),
+
+    router.get(
+        '/show',
+        controller.getEmployees
+    ),
    
 ]
