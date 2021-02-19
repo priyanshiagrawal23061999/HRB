@@ -37,6 +37,28 @@ exports.insertEmployee = (req, res) =>{
     
 }
 
+exports.searchEmployee = (req, res) => {
+    var query = req.params.query;
+    console.log(query)
+
+    Employees.find({
+        $or:[{EmployeeId: query},{EmployeeName: query}, {Company: query},
+        {Department: query}, {Designation: query},
+    {Email: query}, {ReportingTo: query}, {WorkType: query},
+{EmploymentType: query}, {OfficeBranch: query}, {EmployeeGrade: query},
+{EmployeeGroup: query}, {EmployeeType: query}, {Value: query}]
+    }, function(err, result) {
+    if (err)
+    {
+        console.log(err)
+        res.status(500).send(err);
+    }
+    console.log(result);
+    res.json(result);
+
+ });
+}
+
 
 
 

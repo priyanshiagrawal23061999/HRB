@@ -16,5 +16,11 @@ module.exports =[
         '/show',
         controller.getEmployees
     ),
+
+    
+    router.get(
+        '/search/:query',
+        controller.searchEmployee
+    ),
    
 ]
