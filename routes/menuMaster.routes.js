@@ -20,7 +20,11 @@ module.exports =[
         controller.getEmployees
     ),
 
-    
+    router.get(
+        '/emp/:id',
+        authJwt.verifyToken,
+        controller.getEmployeeById
+    ),
     router.get(
         '/search/:query',
         authJwt.verifyToken,
