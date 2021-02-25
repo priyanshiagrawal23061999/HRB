@@ -23,12 +23,12 @@ const Employees = mongoose.model(
     WorkType: String,
 
     // Work Information
-    User: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    // User: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "User",
+    //   },
+    // ],
     EmploymentType: String,
     OfficeBranch: String,
     EmployeeGrade: String,

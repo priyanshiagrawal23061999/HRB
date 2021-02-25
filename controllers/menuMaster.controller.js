@@ -18,11 +18,9 @@ exports.getEmployees = (req, res) => {
 
 exports.insertEmployee = (req, res) => {
   const employee = new Employees(req.body);
-  User.findOne({ _id: mongoose.Types.ObjectId(req.userId) }, (err, user) => {
-    if (user) {
-      employee.User.push(user);
+
       Employees.findOne(
-        { User: mongoose.Types.ObjectId(req.userId) },
+        { Email: employee.Email },
         (err, emp) => {
           if (!emp) {
             // The below two lines will add the user's
@@ -30,7 +28,7 @@ exports.insertEmployee = (req, res) => {
             employee
               .save()
               .then((result) => {
-                return res.status(200).send({ message: "Employee created!" });
+                return res.status(201).send({ message: "Employee created!" });
               })
               .catch((err) => {
                 return res.status(500).send(err);
@@ -38,23 +36,20 @@ exports.insertEmployee = (req, res) => {
           }
           if (emp) {
             Employees.updateOne(
-              { User: mongoose.Types.ObjectId(req.userId) },
+              { Email: employee.Email },
               req.body,
               (err, success) => {
                 if (err) {
                   return res.status(500).send(err.message);
                 }
                 if (success) {
-                  return res.status(204).send({ message: "Employee Updated!" });
+                  return res.status(200).send({ message: "Employee Updated!" });
                 }
               }
             );
           }
         }
       );
-    }
-    if (err) return res.status(500).send({ message: err.err.message });
-  });
 };
 // exports.insertEmployee = (req, res) =>{
 //     console.log(req.body)
@@ -98,10 +93,8 @@ exports.insertEmployee = (req, res) => {
 // }
 exports.getEmployeeById = (req, res) => {
   const id = req.params.id;
-  console.log(id);
-  Employees.findOne({ User: mongoose.Types.ObjectId(id) })
+  Employees.findById({ _id: mongoose.Types.ObjectId(id) })
     .then((emp) => {
-      console.log(emp);
       return res.status(200).json(emp);
     })
     .catch((err) => {
@@ -111,7 +104,6 @@ exports.getEmployeeById = (req, res) => {
 
 exports.searchEmployee = (req, res) => {
   var query = req.params.query;
-  console.log(query);
 
   Employees.find(
     {
@@ -134,10 +126,8 @@ exports.searchEmployee = (req, res) => {
     },
     function (err, result) {
       if (err) {
-        console.log(err);
         res.status(500).send(err);
       }
-      console.log(result);
       res.json(result);
     }
   );
