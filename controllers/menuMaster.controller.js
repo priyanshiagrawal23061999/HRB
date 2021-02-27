@@ -1,5 +1,6 @@
 const db = require("../models");
 const mongoose = require("mongoose");
+const { validationResult } = require("express-validator");
 
 const Employees = db.employees;
 const User = db.user;
@@ -30,6 +31,12 @@ exports.getEmployeeName = (req, res) =>{
 }
 
 exports.insertEmployee = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      errors: errors.array(),
+    });
+  }
   const employee = new Employees(req.body);
 
       Employees.findOne(
