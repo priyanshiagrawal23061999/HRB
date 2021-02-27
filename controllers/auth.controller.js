@@ -157,6 +157,7 @@ exports.signin = (req, res) => {
         email: user.email,
         roles: authorities,
         accessToken: token,
+        message: 'User loggedin Successfully!'
       });
     });
 };
