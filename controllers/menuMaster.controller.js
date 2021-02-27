@@ -6,6 +6,9 @@ const User = db.user;
 
 exports.getEmployees = (req, res) => {
   Employees.find({}, function (err, users) {
+    if (err){
+      return res.send(500).send({message : err.message});
+    }
     var userMap = {};
 
     users.forEach(function (user) {
@@ -15,6 +18,16 @@ exports.getEmployees = (req, res) => {
     res.send(userMap);
   });
 };
+
+exports.getEmployeeName = (req, res) =>{
+  Employees.find({},{EmployeeName:1}, (err, users)=>{
+    if (err){
+      return res.status(500).send({message : err.message});
+    }
+
+    res.status(200).send(users);
+  })
+}
 
 exports.insertEmployee = (req, res) => {
   const employee = new Employees(req.body);
@@ -51,46 +64,7 @@ exports.insertEmployee = (req, res) => {
         }
       );
 };
-// exports.insertEmployee = (req, res) =>{
-//     console.log(req.body)
-//     if((req.body.EmployeeName==null || req.body.EmployeeName=='') ||
-//     (req.body.Company==null || req.body.Company=='' )||
-//         (req.body.Department==null || req.body.Department=='') ||
-//         (req.body.Designation==null || req.body.Designation=='') ||
-//         (req.body.Email==null || req.body.Email=='') ||
-//         (req.body.JoiningDate == null || req.body.JoiningDate == '') ||
-//         (req.body.ReportingTo==null || req.body.ReportingTo=='') ||
-//         (req.body.DOB==null || req.body.DOB=='') ||
-//         (req.body.WorkType==null || req.body.WorkType=='') ||
-//         (req.body.EmploymentType==null || req.body.EmploymentType=='') ||
-//         (req.body.OfficeBranch==null || req.body.OfficeBranch=='') ||
-//         (req.body.EmployeeGrade==null || req.body.EmployeeGrade=='') ||
-//         (req.body.EmployeeGroup==null || req.body.EmployeeGroup=='') ||
-//         (req.body.EmployeeType==null || req.body.EmployeeType=='') ||
-//         (req.body.Value==null || req.body.Value=='') ||
-//         (req.body.EffectiveDate==null || req.body.EffectiveDate=='')){
-//             res.status(422).send('Fill all the required fields')
-//         }
-//         else{
-//     emplId = ""
-//     Employees.countDocuments({Company:{$gte: req.body.Company}}, function (err, count) {
-//         emplId = `0601${req.body.Company}${count+1}`
-//         req.body.EmployeeId = emplId
 
-//         Employees.create(req.body, function(err, data){
-//             if(err){
-//                 console.log('error')
-//                 res.status(500).send(err)
-//             }
-//             else{
-//             res.send('inserted') // Success
-//             }
-//         })
-//       });
-
-//     }
-
-// }
 exports.getEmployeeById = (req, res) => {
   const id = req.params.id;
   Employees.findById({ _id: mongoose.Types.ObjectId(id) })

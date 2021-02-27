@@ -30,5 +30,9 @@ module.exports =[
         authJwt.verifyToken,
         controller.searchEmployee
     ),
-   
+    router.get(
+        '/empName',
+        authJwt.verifyToken,
+        controller.getEmployeeName
+    )
 ]
