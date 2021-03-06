@@ -23,3 +23,13 @@ exports.showEvents = (req, res) => {
        }
       });
 }
+
+exports.deleteEvent = (req, res) => {
+  var query = req.params.query;
+
+    console.log(query)
+    Calendar.findOneAndDelete({ title: query }, function (err) {
+        if(err) console.log(err);
+        console.log("Successful deletion");
+      });
+}
