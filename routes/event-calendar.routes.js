@@ -7,7 +7,7 @@ const app = express()
 const router = express.Router();
 
 module.exports =[
-  router.get("/showEvents", authJwt.verifyToken),
+  router.get("/showEvents", authJwt.verifyToken, calendarController.showEvents),
   router.post("/postEvent", authJwt.verifyToken, calendarController.addEvent),
     
 ]
