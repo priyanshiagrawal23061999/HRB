@@ -29,7 +29,11 @@ exports.deleteEvent = (req, res) => {
 
     console.log(query)
     Calendar.findOneAndDelete({ title: query }, function (err) {
-        if(err) console.log(err);
+        if(err) {
+            console.log(err);
+            res.send(err)
+        }
         console.log("Successful deletion");
+        res.send("Successful deletion")
       });
 }
