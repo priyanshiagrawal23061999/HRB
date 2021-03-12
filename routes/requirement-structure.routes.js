@@ -8,5 +8,5 @@ const router = express.Router();
 module.exports =[
   router.post("/addJobVacancy", authJwt.verifyToken, controller.insertJobVacancy),
   router.get("/getJobVacancy",  controller.getJobVacancy),
-    
+  router.post("/fixInterview", controller.fixInterview)
 ]

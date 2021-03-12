@@ -11,6 +11,7 @@ db.hrRoles = require("./hrRoles.model")
 db.employees = require("./employees.model")
 db.calendar = require("./event-calendar.model")
 db.jobVacancy = require("./JobVacancy.model")
+db.fixInterview = require("./fix-interview.model")
 db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;

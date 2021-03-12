@@ -1,6 +1,7 @@
 const db = require("../models");
 
 const JobVacancy = db.jobVacancy;
+const fixInterview = db.fixInterview
 
 
 exports.insertJobVacancy = (req, res) =>{
@@ -22,4 +23,13 @@ exports.getJobVacancy = (req, res) => {
         res.send(jobs);
         }
       });
+}
+
+exports.fixInterview = (req, res) =>{
+    console.log(req.body.Date)
+    fixInterview.insertMany(req.body).then(function(){ 
+        res.send({message: `Interview Fixed on ${req.body.Date}`}) // Success 
+    }).catch(function(error){ 
+        console.log(error)      // Failure 
+    }); 
 }
