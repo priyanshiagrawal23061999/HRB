@@ -47,3 +47,15 @@ exports.fixInterview = (req, res) =>{
         console.log(error)      // Failure 
     }); 
 }
+
+exports.getSchedule = (req,res) => {
+    fixInterview.find({}, function (err, interview) {
+        if (err){
+          return res.send(500).send({message : err.message});
+        }
+        else{
+            console.log(interview)
+        res.send(interview);
+        }
+      });   
+}

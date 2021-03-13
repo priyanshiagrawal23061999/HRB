@@ -17,5 +17,6 @@ module.exports =[
   check("Method", "Please Enter a Valid Method").not().isEmpty(),
   check("Status", "Please Enter a Valid Status").not().isEmpty(),
   
-  controller.fixInterview)
+  controller.fixInterview),
+  router.get("/getInterviews", authJwt.verifyToken, controller.getSchedule)
 ]
