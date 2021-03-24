@@ -9,6 +9,7 @@ const hrRolesRoute = require('./routes/HrRoles.routes')
 const menuMasterRoute = require('./routes/menuMaster.routes')
 const eventCalendarRoute = require('./routes/event-calendar.routes')
 const requirementStructureRoute = require('./routes/requirement-structure.routes')
+const training = require('./routes/training.routes')
 
 router.use('/test', userRoute);
 router.use('/auth', authRoute);
@@ -16,5 +17,6 @@ router.use('/hrroles', hrRolesRoute)
 router.use('/menuMaster', menuMasterRoute)
 router.use('/eventCalendar', eventCalendarRoute)
 router.use('/requirementStructure', requirementStructureRoute)
+router.use('/training', training)
 
 module.exports = router
