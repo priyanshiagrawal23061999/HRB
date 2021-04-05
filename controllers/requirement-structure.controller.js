@@ -1,5 +1,6 @@
 const db = require("../models");
 const nodemailer = require("../config/nodemailer.config");
+const mongoose = require("mongoose");
 
 const JobVacancy = db.jobVacancy;
 const fixInterview = db.fixInterview
@@ -59,3 +60,26 @@ exports.getSchedule = (req,res) => {
         }
       });   
 }
+
+
+exports.getVacancyById = (req, res) => {
+    const id = req.params.id;
+    JobVacancy.findById({ _id: mongoose.Types.ObjectId(id) })
+      .then((emp) => {
+        return res.status(200).json(emp);
+      })
+      .catch((err) => {
+        return res.status(500).json({ message: err.message });
+      });                     
+  };
+
+  exports.getScheduleById = (req, res) => {
+    const id = req.params.id;
+    fixInterview.findById({ _id: mongoose.Types.ObjectId(id) })
+      .then((emp) => {
+        return res.status(200).json(emp);
+      })
+      .catch((err) => {
+        return res.status(500).json({ message: err.message });
+      });                     
+  };

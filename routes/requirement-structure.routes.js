@@ -18,5 +18,8 @@ module.exports =[
   check("Status", "Please Enter a Valid Status").not().isEmpty(),
   
   controller.fixInterview),
-  router.get("/getInterviews", authJwt.verifyToken, controller.getSchedule)
+  router.get("/getInterviews", authJwt.verifyToken, controller.getSchedule),
+  router.get("/editJob/:id", authJwt.verifyToken, controller.getVacancyById),
+  router.get("/editSchedule/:id", authJwt.verifyToken, controller.getScheduleById),
+
 ]
