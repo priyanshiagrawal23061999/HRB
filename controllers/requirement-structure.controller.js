@@ -1,18 +1,45 @@
 const db = require("../models");
 const nodemailer = require("../config/nodemailer.config");
 const mongoose = require("mongoose");
+const e = require("cors");
 
 const JobVacancy = db.jobVacancy;
 const fixInterview = db.fixInterview
 
 
 exports.insertJobVacancy = (req, res) =>{
-    console.log(req.body)
-    JobVacancy.insertMany(req.body).then(function(){ 
-        res.send({message: 'inserted'}) // Success 
-    }).catch(function(error){ 
-        console.log(error)      // Failure 
-    }); 
+    
+    JobVacancy.findOne(
+      { JobTitle: req.body.JobTitle, VacancyName: req.body.VacancyName },
+      (err, emp) => {
+        if (!emp) {
+          // The below two lines will add the user's
+          // ObjectID to the the employee's User array field
+          JobVacancy
+            .insertMany(req.body)
+            .then(() => {
+              return res.status(201).send({ message: "Added!" });
+            })
+            .catch((err) => {
+              return res.status(500).send(err);
+            });
+        }
+        if (emp) {
+          JobVacancy.updateOne(
+            { JobTitle: req.body.JobTitle, VacancyName: req.body.VacancyName },
+            req.body,
+            (err, success) => {
+              if (err) {
+                return res.status(500).send(err.message);
+              }
+              if (success) {
+                return res.status(200).send({ message: "Vacancy Updated!" });
+              }
+            }
+          );
+        }
+      }
+    );
 }
 
 exports.getJobVacancy = (req, res) => {
@@ -29,24 +56,81 @@ exports.getJobVacancy = (req, res) => {
 
 exports.fixInterview = (req, res) =>{
     console.log(req.body.Date)
-    fixInterview.insertMany(req.body).then(function(){ 
-        nodemailer.sendConfirmationEmail(
-            req.body.Candidate,
-            (subject = "Interview Schedule"),
-            (body = `<h2>Dear Candidate </h2>
-          <p>
-          Your interview for the role of ${req.body.Vacancy} has been scheduled on ${req.body.Date}
-          at ${req.body.InterviewTime}. 
-          </p>
-          <div><p>
-          Regards<br>
-          M2aster HR
-          </p></div>`)
+      
+    JobVacancy.findOne(
+      { Candidate: req.body.Candidate},
+      (err, emp) => {
+        if(err){
+          console.log(err)
+        }
+        if (!emp) {
+          // The below two lines will add the user's
+          // ObjectID to the the employee's User array field
+          fixInterview
+            .insertMany(req.body)
+            .then(() => {
+              if(req.body.Status == "Called For Interview"){
+      nodemailer.sendConfirmationEmail(
+        req.body.Candidate,
+        (subject = "Interview Schedule"),
+        (body = `<h2>Dear Candidate </h2>
+      <p>
+      Your interview for the role of ${req.body.Vacancy} has been scheduled on ${req.body.Date}
+      at ${req.body.InterviewTime}. 
+      </p>
+      <div><p>
+      <p>${req.body.Comments}</p>
+
+      Regards<br>
+      M2aster HR
+      </p></div>`)
+      );
+    return res.send({message: `Interview Fixed on ${req.body.Date}`}) // Success 
+      }
+      else return res.status(201).send({ message: "Added!" });
+            })
+            .catch((err) => {
+              return res.status(500).send(err);
+            });
+        }
+        if (emp) {
+          fixInterview.updateOne(
+            { JobTitle: req.body.JobTitle, VacancyName: req.body.VacancyName },
+            req.body,
+            (err, success) => {
+              if (err) {
+                return res.status(500).send(err.message);
+              }
+              if (success) {
+                // return res.status(200).send({ message: " Updated!" });
+              if(req.body.Status == "Called For Interview"){
+                
+      nodemailer.sendConfirmationEmail(
+        req.body.Candidate,
+        (subject = "Interview Schedule"),
+        (body = `<h2>Dear Candidate </h2>
+      <p>
+      Your interview for the role of ${req.body.Vacancy} has been scheduled on ${req.body.Date}
+      at ${req.body.InterviewTime}. 
+      </p>
+      <p>${req.body.Comments}</p>
+      <div><p>
+      Regards<br>
+      M2aster HR
+      </p></div>`)
+      );
+    return res.send({message: `Interview Fixed on ${req.body.Date}`}) // Success 
+      }
+      else{
+                return res.status(200).send({ message: " Updated!" });
+
+      }
+              }
+            }
           );
-        res.send({message: `Interview Fixed on ${req.body.Date}`}) // Success 
-    }).catch(function(error){ 
-        console.log(error)      // Failure 
-    }); 
+        }
+      },
+    ) 
 }
 
 exports.getSchedule = (req,res) => {
