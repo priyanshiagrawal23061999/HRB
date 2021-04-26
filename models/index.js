@@ -13,6 +13,7 @@ db.calendar = require("./event-calendar.model")
 db.jobVacancy = require("./JobVacancy.model")
 db.fixInterview = require("./fix-interview.model")
 db.training = require("./training.model")
+db.application = require("./application.model")
 db.ROLES = ["user", "admin", "moderator"];
 
 module.exports = db;
