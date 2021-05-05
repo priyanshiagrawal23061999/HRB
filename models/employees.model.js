@@ -14,9 +14,6 @@ const Employees = mongoose.model(
     ReportingTo: String,
     DOB:  {
       type: Date,
-      // The dates of the first and last episodes of
-      // Star Trek: The Next Generation
-      // min: '1987-09-28',
       max: '2005-05-23'
       
     },

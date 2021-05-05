@@ -47,6 +47,10 @@ const UserSchema =  new mongoose.Schema({
     type: Date,
     required: false,
   },
+  authorized:{
+    type : Boolean,
+    default : false,
+  }
 })
 
 UserSchema.methods.generatePasswordReset = function() {

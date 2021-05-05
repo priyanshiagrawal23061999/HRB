@@ -16,16 +16,26 @@ exports.getEmployees = (req, res) => {
       userMap[user._id] = user;
     });
 
-    res.send(userMap);
+    return res.send(userMap);
   });
 };
 
-exports.getEmployeeName = (req, res) =>{
-  Employees.find({},{EmployeeName:1}, (err, users)=>{
+exports.getDepartment = (req, res) =>{
+  Employees.distinct('Department', (err, users)=>{
     if (err){
       return res.status(500).send({message : err.message});
     }
+    console.log(users)
+    res.status(200).send(users);
+  })
+}
 
+exports.getEmployeeName = (req, res) =>{
+  Employees.find({Department: req.params.department},{EmployeeName:1, Department:1}, (err, users)=>{
+    if (err){
+      return res.status(500).send({message : err.message});
+    }
+    console.log(users)
     res.status(200).send(users);
   })
 }
