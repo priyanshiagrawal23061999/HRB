@@ -5,7 +5,7 @@ const e = require("cors");
 
 const JobVacancy = db.jobVacancy;
 const fixInterview = db.fixInterview
-
+const Application = db.application
 
 exports.insertJobVacancy = (req, res) =>{
     
@@ -167,3 +167,14 @@ exports.getVacancyById = (req, res) => {
         return res.status(500).json({ message: err.message });
       });                     
   };
+
+  exports.postApply = (req, res) => {
+    Application.insertMany(req.body).then(() => {
+      return res.status(201).send({ message: "Successfully Applied!" });
+
+    }).catch((err) =>{
+      return res.status(500).json({
+        message: "Error!!! Try Again"
+      })
+    })
+  }
