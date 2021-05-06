@@ -1,5 +1,7 @@
 const { authJwt } = require("../middlewares");
 const controller = require("../controllers/requirement-structure.controller")
+const upload = require("../middlewares/upload");
+
 const express = require('express')
 const app = express()
 const { check } = require("express-validator");
@@ -21,5 +23,8 @@ module.exports =[
   router.get("/getInterviews", authJwt.verifyToken, controller.getSchedule),
   router.get("/editJob/:id", authJwt.verifyToken, controller.getVacancyById),
   router.get("/editSchedule/:id", authJwt.verifyToken, controller.getScheduleById),
-  router.post("/apply", authJwt.verifyToken, controller.postApply )
+  router.post("/apply",
+    upload.upload, controller.postApply ),
+ 
+ 
 ]

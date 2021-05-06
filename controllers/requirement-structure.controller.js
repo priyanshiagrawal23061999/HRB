@@ -2,6 +2,7 @@ const db = require("../models");
 const nodemailer = require("../config/nodemailer.config");
 const mongoose = require("mongoose");
 const e = require("cors");
+const { body } = require("express-validator");
 
 const JobVacancy = db.jobVacancy;
 const fixInterview = db.fixInterview
@@ -169,12 +170,20 @@ exports.getVacancyById = (req, res) => {
   };
 
   exports.postApply = (req, res) => {
+    if(!req.file) {
+      return res.status(401).send({ message: 'Content not found!!!'});
+  } else {
+      req.body.Resume = 'http://127.0.01:9000/'+ __basedir + "/resources/static/assets/uploads/" + req.file.filename;
+      console.log(req.body.Resume)
+  
     Application.insertMany(req.body).then(() => {
-      return res.status(201).send({ message: "Successfully Applied!" });
+      return res.status(200).send({ message: "Successfully Applied!" });
 
     }).catch((err) =>{
+      console.log(err)
       return res.status(500).json({
         message: "Error!!! Try Again"
       })
     })
+  }
   }
