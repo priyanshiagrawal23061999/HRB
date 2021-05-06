@@ -10,6 +10,8 @@ const chalk = require("chalk");
 InitiateMongoServer();
 const app = express();
 
+global.__basedir = __dirname;
+
 var corsOptions = {
     origin: "*"
   };
