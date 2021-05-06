@@ -21,7 +21,7 @@ exports.insertJobVacancy = (req, res) =>{
               return res.status(201).send({ message: "Added!" });
             })
             .catch((err) => {
-              return res.status(500).send(err);
+              return res.status(500).send({message: "Internal Server Error"});
             });
         }
         if (emp) {

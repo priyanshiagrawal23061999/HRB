@@ -55,5 +55,7 @@ module.exports = [
 
   router.get("/emp/:id", authJwt.verifyToken, controller.getEmployeeById),
   router.get("/search/:query", authJwt.verifyToken, controller.searchEmployee),
-  router.get("/empName", authJwt.verifyToken, controller.getEmployeeName),
+  router.get("/empName/:department", authJwt.verifyToken, controller.getEmployeeName),
+  router.get("/department", authJwt.verifyToken, controller.getDepartment),
+
 ];

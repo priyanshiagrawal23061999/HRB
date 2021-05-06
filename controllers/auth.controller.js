@@ -52,6 +52,7 @@ exports.signup = async (req, res) => {
             name: { $in: req.body.roles },
           },
           (err, roles) => {
+
             if (err) {
               return res.status(500).send({ message: err });
             }
@@ -89,7 +90,7 @@ exports.signup = async (req, res) => {
         });
       }
     });
-    nodemailer.sendConfirmationEmail(
+    nodemailer.sendEmail(
       user.email,
       (user.subject = "Please confirm your account"),
       (body = `<h1>Email Confirmation</h1>
