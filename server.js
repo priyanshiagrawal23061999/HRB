@@ -12,11 +12,12 @@ const app = express();
 
 global.__basedir = __dirname;
 
+const auth = require('./middlewares/authjwt')
 var corsOptions = {
     origin: "*"
   };
 app.use(cors(corsOptions));
-
+app.use(auth.corsMiddleware);
 
 const router = require('./router');
 
