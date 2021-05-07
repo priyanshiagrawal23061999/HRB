@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to HR application." });
   });
 
-var server = app.listen(9000, function(){
+var server = app.listen(process.env.PORT || 9000, function(){
     var port = server.address().port;
     console.log(chalk.bgGreen('Server is running on port',port));
 });

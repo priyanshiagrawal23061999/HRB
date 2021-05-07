@@ -83,7 +83,7 @@ isModerator = (req, res, next) => {
 };
 corsMiddleware = (req, res, next) => {
   //Enabling CORS
-  res.header("Access-Control-Allow-Origin", "https://m2aster.herokuapp.com");
+  res.header("Access-Control-Allow-Origin",process.env.ORIGIN || "*");
   res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
   res.header(
     "Access-Control-Allow-Headers",
