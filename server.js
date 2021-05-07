@@ -12,11 +12,12 @@ const app = express();
 
 global.__basedir = __dirname;
 
+const auth = require('./middlewares/authjwt')
 var corsOptions = {
     origin: "*"
   };
 app.use(cors(corsOptions));
-
+app.use(auth.corsMiddleware);
 
 const router = require('./router');
 
@@ -35,7 +36,7 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to HR application." });
   });
 
-var server = app.listen(9000, function(){
+var server = app.listen(process.env.PORT || 9000, function(){
     var port = server.address().port;
     console.log(chalk.bgGreen('Server is running on port',port));
 });

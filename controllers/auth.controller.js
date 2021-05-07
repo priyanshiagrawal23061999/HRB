@@ -99,6 +99,17 @@ exports.signup = async (req, res) => {
       <a href=http://localhost:4200/auth/verifyuser?confirmationCode=${user.confirmationCode}> Click here</a>
       </div>`)
     );
+    // nodemailer.sendEmail(
+    //   user.email,
+    //   (user.subject = "Please Authorize user"),
+    //   (body = `<h1>Role Verification</h1>
+    //   <h2>Hello,</h2>
+    //   <p>Please confirm the user's role by clicking on the following link</p>
+    //   <p>User Details : </p>
+    //   <p>Username: ${user.username},Email: ${user.Email},Role: ${user.role}</p>
+    //   <a href=http://localhost:4200/auth/verifyrole?confirmationCode=${user.confirmationCode}> Click here</a>
+    //   </div>`)
+    // );
   } catch (err) {
     res.status(500).send("Error in Saving");
   }
@@ -130,6 +141,11 @@ exports.signin = (req, res) => {
           message: "Pending Account. Please Verify Your Email!",
         });
       }
+      // if (!user.authorized) {
+      //   return res.status(401).send({
+      //     message: "Admin did not verify to user, Please Try after sometime!",
+      //   });
+      // }
 
       var passwordIsValid = bcrypt.compareSync(
         req.body.password,
