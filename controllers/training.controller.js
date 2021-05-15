@@ -16,3 +16,28 @@ exports.addFeedback = (req, res) =>{
     }); 
 }
 
+exports.addTraining = (req, res) => {
+    console.log(req.body)
+    Training.insertMany(req.body).then(() => {
+        return res.status(200).send({ message: "Successfully Saved!" });
+  
+      }).catch((err) =>{
+        console.log(err)
+        return res.status(500).json({
+          message: "Error!!! Try Again"
+        })
+      })
+}
+
+exports.getTrainings = (req, res) => {
+  Training.find({}, function (err, training) {
+    if (err){
+      return res.send(500).send({message : err.message});
+    }
+    else{
+        console.log(training)
+    res.send(training);
+    }
+  });   
+}
+

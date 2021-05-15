@@ -6,7 +6,8 @@ const Training = mongoose.model(
     TrainingName: String,
     Employee: String,
     Feedback: String,
-    
+    Trainer: String,
+    Description: String
   })
 );
 
