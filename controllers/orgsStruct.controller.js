@@ -21,7 +21,9 @@ exports.insertNotices = (req, res) => {
   console.log(notice);
   notice.save((err, data) => {
     if (data) {
-      return res.status(201).send({ message: "Your notice has been added successfully!!" });
+      return res
+        .status(201)
+        .send({ message: "Your notice has been added successfully!!" });
     }
     if (err) {
       return res.status(500).send({ message: "Internal Server Error" });
@@ -29,12 +31,23 @@ exports.insertNotices = (req, res) => {
   });
 };
 exports.getNotices = (req, res) => {
-    console.log(new Date())
-    notices.find({NoticeDate:new Date()})
+  let today = new Date();
+  let nextDate = new Date();
+  nextDate.setDate(nextDate.getDate() + 30);
+  console.log(nextDate);
+  notices
+    .find({
+      NoticeDate: {
+        $lte: Date("2021-05-15T00:00:00.000Z"),
+        // $lt: Date("2021-06-14T00:00:00.000Z")
+      },
+    })
+    .sort({ NoticeDate: "asc" })
     .then((data) => {
-        return res.status(200).send(data);
-      })
-      .catch((err) => {
-        return res.status(500).send({message: "Internal Server Error"});
-      });
+      console.log(data);
+      return res.status(200).send(data);
+    })
+    .catch((err) => {
+      return res.status(500).send({ message: "Internal Server Error" });
+    });
 };

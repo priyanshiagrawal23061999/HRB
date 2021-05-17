@@ -173,7 +173,7 @@ exports.getVacancyById = (req, res) => {
     if(!req.file) {
       return res.status(401).send({ message: 'Content not found!!!'});
   } else {
-      req.body.Resume = 'http://127.0.01:9000/'+ __basedir + "/resources/static/assets/uploads/" + req.file.filename;
+      req.body.Resume = 'https://m2aster.herokuapp.com/'+ __basedir + "/resources/static/assets/uploads/" + req.file.filename;
       console.log(req.body.Resume)
   
     Application.insertMany(req.body).then(() => {
