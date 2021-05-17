@@ -5,7 +5,7 @@ const Training = mongoose.model(
   new mongoose.Schema({
     TrainingName: String,
     Employee: String,
-    Feedback: String,
+    Feedback: Array,
     Trainer: String,
     Description: String
   })

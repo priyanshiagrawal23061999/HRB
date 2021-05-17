@@ -7,7 +7,7 @@ const app = express()
 const router = express.Router();
 
 module.exports =[
-  router.put("/addFeedback",  trainingController.addFeedback),
+  router.put("/addFeedback/:id",  trainingController.addFeedback),
   router.post("/addTraining", authJwt.verifyToken, trainingController.addTraining),
   router.get("/getTrainings", trainingController.getTrainings)
 ]

@@ -6,10 +6,13 @@ const Training = db.training;
 
 exports.addFeedback = (req, res) =>{
     console.log(req.body)
-    Training.findOneAndUpdate({TrainingName: req.body.TrainingName,
-    Employee: req.body.Employee}, {Feedback: req.body.Feedback}, {
-        new: true
-      }).then(function(){ 
+    console.log(req.params.id)
+    id = req.params.id
+    NEW_COMMENT = req.body
+    Training.updateOne( 
+      { _id : mongoose.Types.ObjectId(`${id}`) },
+      { $push: { Feedback: NEW_COMMENT } }
+    ).then(function(){ 
         res.send({message: 'inserted'}) // Success 
     }).catch(function(error){ 
         console.log(error)      // Failure 
