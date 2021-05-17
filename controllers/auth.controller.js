@@ -96,7 +96,7 @@ exports.signup = async (req, res) => {
       (body = `<h1>Email Confirmation</h1>
       <h2>Hello ${user.username}</h2>
       <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-      <a href=http://localhost:4200/auth/verifyuser?confirmationCode=${user.confirmationCode}> Click here</a>
+      <a href=https://m2asterhr.herokuapps.com/auth/verifyuser?confirmationCode=${user.confirmationCode}> Click here</a>
       </div>`)
     );
     // nodemailer.sendEmail(
@@ -225,7 +225,7 @@ exports.recover = async (req, res) => {
       user.generatePasswordReset();
 
       user.save((err, user) => {
-        let link = `http://127.0.0.1:4200/auth/resetPassword?token=${user.resetPasswordToken}`;
+        let link = `https://m2asterhr.herokuapp.com/auth/resetPassword?token=${user.resetPasswordToken}`;
         nodemailer.sendConfirmationEmail(
           req.body.email,
           (user.subject = "Password change request"),
