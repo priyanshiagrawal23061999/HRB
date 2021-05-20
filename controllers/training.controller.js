@@ -44,3 +44,17 @@ exports.getTrainings = (req, res) => {
   });   
 }
 
+exports.getFeedbacks = (req, res) => {
+  console.log(req.params.id)
+  id = req.params.id
+  Training.find({_id : mongoose.Types.ObjectId(`${id}`)}, {Feedback: 1}, 
+  function(err, feed){
+    if(err){
+      returnres.send(500).send({message: err.message})
+    }
+    else{
+      res.send(feed)
+    }
+  })
+}
+
