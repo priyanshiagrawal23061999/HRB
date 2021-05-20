@@ -96,7 +96,7 @@ exports.signup = async (req, res) => {
       (body = `<h1>Email Confirmation</h1>
       <h2>Hello ${user.username}</h2>
       <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-      <a href=https://m2asterhr.herokuapps.com/auth/verifyuser?confirmationCode=${user.confirmationCode}> Click here</a>
+      <a href=https://m2asterhr.herokuapp.com/auth/verifyuser?confirmationCode=${user.confirmationCode}> Click here</a>
       </div>`)
     );
     // nodemailer.sendEmail(
